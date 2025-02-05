@@ -14,3 +14,5 @@ Route::get('/greet', [GreetController::class, 'index']);
 
 // Resource route for tasks
 Route::resource('tasks', TaskController::class);
+
+Route::patch('/tasks/{id}/toggle', [TaskController::class, 'toggleCompletion'])->name('tasks.toggle');
