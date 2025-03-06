@@ -35,8 +35,8 @@
             background: #fff;
         }
         .task.completed {
-            background: #e0f7fa; /* Light Blue for Completed Tasks */
-            text-decoration: line-through; /* Cross out completed tasks */
+            background: #e0f7fa;
+            text-decoration: line-through;
         }
         .task span {
             font-size: 18px;
@@ -78,6 +78,10 @@
 <body>
 
 <div class="container">
+    <!-- 🛠 DEBUG: Check if route is generated correctly -->
+    <p>Route for create task: {{ route('tasks.create') }}</p>
+
+    <!-- ✅ Fixed: Ensure the button navigates correctly -->
     <a href="{{ route('tasks.create') }}" class="toggle">+ Create a New Task</a>
     <br><br>
 
