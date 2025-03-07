@@ -1,144 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task List</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        h1, h2 {
-            text-align: center;
-        }
-        .container {
-            width: 50%;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        .task {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .task.pending {
-            background: #fff;
-        }
-        .task.completed {
-            background: #e0f7fa;
-            text-decoration: line-through;
-        }
-        .task span {
-            font-size: 18px;
-        }
-        .buttons {
-            display: flex;
-            gap: 5px;
-        }
-        button, a {
-            text-decoration: none;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .edit {
-            background-color: #fbc02d;
-            color: white;
-        }
-        .toggle {
-            background-color: #0288d1;
-            color: white;
-        }
-        .delete {
-            background-color: #d32f2f;
-            color: white;
-        }
-        .success {
-            text-align: center;
-            color: green;
-            font-weight: bold;
-        }
-        .divider {
-            border-bottom: 2px solid #ddd;
-            margin: 20px 0;
-        }
-    </style>
-</head>
-<body>
+@extends('layouts.app')
 
-<div class="container">
-    <!-- 🛠 DEBUG: Check if route is generated correctly -->
-    <p>Route for create task: {{ route('tasks.create') }}</p>
+@section('title', 'Task List')
 
-    <!-- ✅ Fixed: Ensure the button navigates correctly -->
-    <a href="{{ route('tasks.create') }}" class="toggle">+ Create a New Task</a>
-    <br><br>
+@section('content')
+    <div class="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
+        <h1 class="text-3xl font-bold text-center mb-4">Task List</h1>
 
-    @if (session('success'))
-        <p class="success">{{ session('success') }}</p>
-    @endif
+        <a href="{{ url('/tasks/create') }}" class="bg-blue-500 text-white px-4 py-2 rounded block text-center mb-4">+ Create a New Task</a>
 
-    <h1>Task List</h1>
-
-    <!-- Pending Tasks Section -->
-    <h2>⏳ Pending Tasks</h2>
-    @foreach ($tasks as $task)
-        @if (!$task->is_completed)
-            <div class="task pending">
-                <span>{{ $task->title }} - ⏳ Pending</span>
-                <div class="buttons">
-                    <a href="{{ route('tasks.edit', $task->id) }}" class="edit">Edit</a>
-                    <form action="{{ route('tasks.toggle', $task->id) }}" method="POST">
-                        @csrf
-                        @method('PATCH')
-                        <button type="submit" class="toggle">Mark as Completed</button>
-                    </form>
-                    <form action="{{ route('tasks.destroy', $task->id) }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="delete" onclick="return confirm('Are you sure?');">Delete</button>
-                    </form>
+        <h2 class="text-xl font-semibold mt-6">⏳ Pending Tasks</h2>
+        @foreach ($tasks as $task)
+            @if (!$task->is_completed)
+                <div class="flex justify-between items-center bg-gray-200 p-4 rounded-md my-2">
+                    <span>{{ $task->title }}</span>
+                    <div class="flex space-x-2">
+                        <a href="{{ route('tasks.edit', $task->id) }}" class="bg-yellow-500 text-white px-3 py-1 rounded">Edit</a>
+                        <form action="{{ route('tasks.toggle', $task->id) }}" method="POST">
+                            @csrf @method('PATCH')
+                            <button type="submit" class="bg-green-500 text-white px-3 py-1 rounded">Mark as Completed</button>
+                        </form>
+                        <form action="{{ route('tasks.destroy', $task->id) }}" method="POST">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded" onclick="return confirm('Are you sure?');">Delete</button>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        @endif
-    @endforeach
+            @endif
+        @endforeach
 
-    <div class="divider"></div>
-
-    <!-- Completed Tasks Section -->
-    <h2>✅ Completed Tasks</h2>
-    @foreach ($tasks as $task)
-        @if ($task->is_completed)
-            <div class="task completed">
-                <span>{{ $task->title }} - ✅ Completed</span>
-                <div class="buttons">
-                    <a href="{{ route('tasks.edit', $task->id) }}" class="edit">Edit</a>
-                    <form action="{{ route('tasks.toggle', $task->id) }}" method="POST">
-                        @csrf
-                        @method('PATCH')
-                        <button type="submit" class="toggle">Mark as Pending</button>
-                    </form>
-                    <form action="{{ route('tasks.destroy', $task->id) }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="delete" onclick="return confirm('Are you sure?');">Delete</button>
-                    </form>
+        <h2 class="text-xl font-semibold mt-6">✅ Completed Tasks</h2>
+        @foreach ($tasks as $task)
+            @if ($task->is_completed)
+                <div class="flex justify-between items-center bg-green-200 p-4 rounded-md my-2">
+                    <span>{{ $task->title }} - ✅ Completed</span>
+                    <div class="flex space-x-2">
+                        <a href="{{ route('tasks.edit', $task->id) }}" class="bg-yellow-500 text-white px-3 py-1 rounded">Edit</a>
+                        <form action="{{ route('tasks.toggle', $task->id) }}" method="POST">
+                            @csrf @method('PATCH')
+                            <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded">Mark as Pending</button>
+                        </form>
+                        <form action="{{ route('tasks.destroy', $task->id) }}" method="POST">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded" onclick="return confirm('Are you sure?');">Delete</button>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        @endif
-    @endforeach
-</div>
-
-</body>
-</html>
+            @endif
+        @endforeach
+    </div>
+@endsection
