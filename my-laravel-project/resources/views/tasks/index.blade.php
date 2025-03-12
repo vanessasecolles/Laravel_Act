@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
-        <h1 class="text-3xl font-bold text-center mb-4">Task List</h1>
+    <h1 class="text-red-500 font-bold text-3xl text-center mb-4">Task List</h1>
 
         <a href="{{ url('/tasks/create') }}" class="bg-blue-500 text-white px-4 py-2 rounded block text-center mb-4">+ Create a New Task</a>
 
